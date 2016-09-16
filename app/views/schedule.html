@@ -5,22 +5,30 @@
 <form class="station-selection">
     <md-input-container>
         <label for="stationName">Station Name</label>
-        <input id="stationName" list="stations" placeholder="write a station name to see its schedule" autofocus>
+        <input id="stationName"
+               ng-model="ctrl.searchForm.station"
+               list="stations"
+               placeholder="write a station name to see its schedule"
+               ng-keyup="ctrl.searchStation()"
+               autofocus>
         <datalist id="stations">
-            <option value="Station 1"></option>
-            <option value="Station 2"></option>
-            <option value="Station 3"></option>
-            <option value="Station 4"></option>
+            <option ng-repeat="station in ctrl.stations"
+                    value="{{station.name}}"></option>
         </datalist>
     </md-input-container>
     <div class="center">
-        <md-button class="md-primary">Search</md-button>
+        <md-button
+                class="md-primary"
+                ng-click="ctrl.getStationInfo()">
+            Search</md-button>
     </div>
 </form>
-<section class="no-result" layout-padding="" ng-hide="true">
+<section class="no-result"
+         layout-padding=""
+         ng-hide="ctrl.searchForm.latestStation">
     <p> There is no results for the station that you are looking for.</p>
 </section>
-<section class="search-result">
+<section class="search-result" ng-show="ctrl.searchForm.latestStation">
     <h2 class="center">The station</h2>
     <md-card class="platform-card">
         <md-card-header>
@@ -49,4 +57,3 @@
 
     </md-card>
 </section>
-
