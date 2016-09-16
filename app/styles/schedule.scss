@@ -1,0 +1,62 @@
+
+.stations-overview {
+  font-size: 8px;
+
+  span {
+    padding-right: 5px;
+  }
+
+  .date {
+    text-align: right;
+  }
+}
+
+.station-selection {
+  width: 90%;
+  margin: 0 auto;
+
+  md-input-container {
+    width: 100%;
+    padding-bottom: 0;
+    margin-bottom: 0;
+
+    .md-errors-spacer {
+      min-height: 0;
+    }
+
+    label {
+      width: 133% !important; // Because angular material scales the label to the 75%
+      max-width: 133% !important;
+      display: none !important;
+      text-align: center;
+      padding-left: 0 !important;
+    }
+    &.md-input-has-value {
+      label { display: block  !important;  }
+    }
+  }
+
+  #stationName {
+
+  }
+}
+
+.search-result {
+  h2 {
+    margin-top: 0;
+  }
+}
+.platform-card {
+  md-card-header {
+    padding-bottom: 0;
+  }
+
+  md-list-item {
+    font-size: 14px;
+
+    .train {
+      font-size: 15px;
+      font-weight: bold;
+    }
+  }
+}

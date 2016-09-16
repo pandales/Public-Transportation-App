@@ -18,11 +18,11 @@ angular
     function ($stateProvider, $urlRouterProvider) {
 
 
-      $urlRouterProvider.otherwise("/schedule");
+      $urlRouterProvider.otherwise("/");
 
       $stateProvider
         .state('schedule', {
-          'url': '/schedule',
+          'url': '/',
           templateUrl: 'views/schedule.html',
           controller: 'ScheduleCtrl',
           controllerAs: 'ctrl'
