@@ -11,6 +11,7 @@ angular.module('publicTransportationApp')
   .service('Station', ['$http', '$localstorage', function ($http, $localstorage) {
     // AngularJS will instantiate a singleton by calling "new" on this function
     var stations = $localstorage.getObject('stations') || [];
+    var latestSearchedStation = $localstorage.getObject('latestSearchedStation') || null;
 
     return {
       getAll: function () {
@@ -56,6 +57,7 @@ angular.module('publicTransportationApp')
       },
 
       getStationRTInfo: function (stationName) {
+        var self = this;
         var stationAbbr = this.getStationAbbreviations(stationName);
 
         if (!stationAbbr) {
@@ -68,12 +70,41 @@ angular.module('publicTransportationApp')
         }).then(function (response) {
           return new Promise(function (resolve, reject) {
             if (response.data.root.station) {
-              resolve(response.data.root.station);
+
+              resolve(self.transformStationData(response.data.root.station));
             } else {
               reject(response.data.root.message);
             }
           });
         });
+      },
+
+      getLatestSearchedStation: function () {
+        return latestSearchedStation;
+      },
+
+      transformStationData: function (stationInfo) {
+        var platforms = [];
+        stationInfo.etd.forEach(function (destination) {
+          destination.estimate.forEach(function (estimate) {
+            var platformNumber = estimate.platform;
+            var destinationAbbr = destination.abbreviation;
+
+
+            if (!platforms[platformNumber]) {
+              platforms[platformNumber] = {};
+              platforms[platformNumber][destinationAbbr] = [];
+            }
+            else if (!platforms[platformNumber][destinationAbbr]) {
+              platforms[platformNumber][destinationAbbr] = [];
+            }
+            estimate["destination"] = destination;
+            platforms[platformNumber][destinationAbbr].push(estimate);
+
+          });
+        });
+        stationInfo.infoByPlatforms = platforms;
+        return stationInfo;
       }
     }
   }]);

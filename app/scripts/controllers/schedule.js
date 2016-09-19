@@ -6,12 +6,22 @@
  * Controller of the publicTransportationApp
  */
 angular.module('publicTransportationApp')
-  .controller('ScheduleCtrl', ['$timeout', 'Station', function ($timeout, Station) {
+  .controller('ScheduleCtrl', [
+    '$timeout',
+    'Station',
+
+    function ($timeout, Station) {
     'use strict';
 
     var ctrl = this;
 
     ctrl.stations = {};
+    ctrl.searchForm = {
+      latestSearchedStation: Station.getLatestSearchedStation(),
+      searchAttempts: 0
+    };
+
+
 
     $timeout(function () {
       document.getElementById("stationName").focus();
@@ -25,11 +35,13 @@ angular.module('publicTransportationApp')
     };
 
     ctrl.getStationInfo = function () {
+      ctrl.searchForm.searchAttempts++;
       Station.getStationRTInfo(ctrl.searchForm.station)
         .then(function (info) {
-          console.log(info);
+          ctrl.searchForm.latestSearchedStation = info;
         })
         .catch(function (error) {
+          ctrl.searchForm.latestSearchedStation = null;
           console.log(error);
         });
     }
