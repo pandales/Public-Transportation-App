@@ -73,7 +73,20 @@ module.exports = function (grunt) {
         port: 9000,
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: 'localhost',
-        livereload: 35729
+        /**
+         * Live reload support for https server.
+         * Thanks to penq_qd (http://stackoverflow.com/users/816878/peng-qd) in
+         *   http://stackoverflow.com/questions/30082238/how-to-change-yeoman-config-to-run-livereload-properly
+         * */
+        livereload: {
+          port: 35729,
+          key: grunt.file.read('livereload.key').toString(),
+          cert: grunt.file.read('livereload.crt').toString()
+        },
+        protocol: 'https',
+        key: grunt.file.read('livereload.key').toString(),
+        cert: grunt.file.read('livereload.crt').toString()
+
       },
       livereload: {
         options: {
