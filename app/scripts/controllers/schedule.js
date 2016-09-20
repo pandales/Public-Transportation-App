@@ -28,20 +28,21 @@ angular.module('publicTransportationApp')
     });
 
     ctrl.searchStation = function () {
-      if (ctrl.searchForm.station.length > 1) {
+      if (ctrl.searchForm.station.name.length > 1) {
         ctrl.stations = Station
-          .search(ctrl.searchForm.station);
+          .search(ctrl.searchForm.station.name);
       }
     };
 
     ctrl.getStationInfo = function () {
-      ctrl.searchForm.searchAttempts++;
-      Station.getStationRTInfo(ctrl.searchForm.station)
+      Station.getStationRTInfo(ctrl.searchForm.station.name)
         .then(function (info) {
           ctrl.searchForm.latestSearchedStation = info;
+          ctrl.searchForm.searchAttempts++;
         })
         .catch(function (error) {
           ctrl.searchForm.latestSearchedStation = null;
+          ctrl.searchForm.searchAttempts++;
           console.log(error);
         });
     }

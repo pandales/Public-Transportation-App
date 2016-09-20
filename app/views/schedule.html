@@ -2,11 +2,11 @@
     <span layout-padding>52 trains currently in service.</span>
     <span layout-padding class="date" flex="">Sep 12, 10:25 am </span>
 </div>-->
-<form class="station-selection">
+<form class="station-selection" ng-init="ctrl.searchForm.station.name = ctrl.searchForm.latestSearchedStation.name">
     <md-input-container>
         <label for="stationName">Station Name</label>
         <input id="stationName"
-               ng-model="ctrl.searchForm.station"
+               ng-model="ctrl.searchForm.station.name"
                list="stations"
                placeholder="write a station name to see its schedule"
                ng-keyup="ctrl.searchStation()"
@@ -25,16 +25,16 @@
 </form>
 <section class="no-searched-text"
          layout-padding=""
-         ng-show="!ctrl.searchForm.latestSearchedStation && !ctrl.searchForm.searchAttempts">
+         ng-show="!ctrl.searchForm.latestSearchedStation.name && !ctrl.searchForm.searchAttempts">
     <p> Write a station name to search in the form above.</p>
 </section>
 <section class="no-result"
          layout-padding=""
-         ng-show="!ctrl.searchForm.latestSearchedStation && ctrl.searchForm.searchAttempts">
+         ng-show="!ctrl.searchForm.latestSearchedStation.name && ctrl.searchForm.searchAttempts">
     <p> There is no results for the station that you are looking for.</p>
 </section>
 <section class="search-result"
-         ng-show="ctrl.searchForm.latestSearchedStation">
+         ng-show="ctrl.searchForm.latestSearchedStation.name">
     <h2 class="center">{{ctrl.searchForm.latestSearchedStation.name}}</h2>
     <platform-card
             ng-repeat="(platformNumber, platformInfo) in ctrl.searchForm.latestSearchedStation.infoByPlatforms"

@@ -10,30 +10,23 @@
 angular.module('publicTransportationApp')
   .service('Station', ['$http', '$localstorage', function ($http, $localstorage) {
     // AngularJS will instantiate a singleton by calling "new" on this function
-    var stations = $localstorage.getObject('stations') || [];
-    var latestSearchedStation = $localstorage.getObject('latestSearchedStation') || null;
+
+    var latestSearchedStation = $localstorage.getObject('latestSearchedStation') || {'name':''};
+    var stations = $localstorage.getObject('stations') || null;
+    if (!stations) {
+      $http({
+        method: 'GET',
+        url: 'https://api.bart.gov/api/stn.aspx?cmd=stns&key=MW9S-E7SL-26DU-VV8V'
+      })
+        .then(function (response) {
+          stations = response.data.root.stations.station;
+          $localstorage.setObject('stations', stations);
+
+          return stations;
+        });
+    }
 
     return {
-      getAll: function () {
-
-        if (stations) {
-          return Promise.resolve(storedStations);
-        }
-        else {
-
-          return $http({
-            method: 'GET',
-            url: 'http://api.bart.gov/api/stn.aspx?cmd=stns&key=MW9S-E7SL-26DU-VV8V'
-          })
-            .then(function (response) {
-              stations = response.data.root.stations.station;
-              $localstorage.setObject('stations', stations);
-
-              return stations;
-            });
-        }
-
-      },
       search: function (q) {
 
         return stations.filter(function (station) {
@@ -59,19 +52,22 @@ angular.module('publicTransportationApp')
       getStationRTInfo: function (stationName) {
         var self = this;
         var stationAbbr = this.getStationAbbreviations(stationName);
-
         if (!stationAbbr) {
           return Promise.reject("The station that you required does not have data available");
         }
 
         return $http({
           method: 'GET',
-          url: 'http://api.bart.gov/api/etd.aspx?cmd=etd&key=MW9S-E7SL-26DU-VV8V&orig=' + stationAbbr
+          url: 'https://api.bart.gov/api/etd.aspx?cmd=etd&key=MW9S-E7SL-26DU-VV8V&orig=' + stationAbbr
         }).then(function (response) {
-          return new Promise(function (resolve, reject) {
-            if (response.data.root.station) {
 
-              resolve(self.transformStationData(response.data.root.station));
+          return new Promise(function (resolve, reject) {
+
+            if (response.data.root.station) {
+              var stationData = self.transformStationData(response.data.root.station);
+              latestSearchedStation = stationData;
+              $localstorage.setObject('latestSearchedStation', stationData);
+              resolve(stationData);
             } else {
               reject(response.data.root.message);
             }
@@ -98,7 +94,7 @@ angular.module('publicTransportationApp')
             else if (!platforms[platformNumber][destinationAbbr]) {
               platforms[platformNumber][destinationAbbr] = [];
             }
-            estimate["destination"] = destination;
+            estimate["destination"] = destination.destination;
             platforms[platformNumber][destinationAbbr].push(estimate);
 
           });
