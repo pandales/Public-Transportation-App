@@ -18,6 +18,19 @@ angular
   .config(['$stateProvider', '$urlRouterProvider', '$httpProvider',
     function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function (registration) {
+            console.log(registration);
+          })
+          .catch(function (m) {
+            console.log(m)
+          });
+
+      } else {
+        console.log("this browser does NOT support service worker");
+      }
+
       // Convert xml responses to json
       $httpProvider.interceptors.push('xmlHttpInterceptor');
 

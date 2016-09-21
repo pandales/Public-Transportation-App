@@ -80,12 +80,12 @@ module.exports = function (grunt) {
          * */
         livereload: {
           port: 35729,
-          key: grunt.file.read('livereload.key').toString(),
-          cert: grunt.file.read('livereload.crt').toString()
+          key: grunt.file.read('ssl/key.pem').toString(),
+          cert: grunt.file.read('ssl/cert.pem').toString()
         },
         protocol: 'https',
-        key: grunt.file.read('livereload.key').toString(),
-        cert: grunt.file.read('livereload.crt').toString()
+        key: grunt.file.read('ssl/key.pem').toString(),
+        cert: grunt.file.read('ssl/cert.pem').toString()
 
       },
       livereload: {
