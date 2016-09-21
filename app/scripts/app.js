@@ -12,11 +12,14 @@ angular
   .module('publicTransportationApp', [
     'ngMaterial',
     'ui.router',
-    'ngMessages'
+    'ngMessages',
+    'xml'
   ])
-  .config(['$stateProvider', '$urlRouterProvider',
-    function ($stateProvider, $urlRouterProvider) {
+  .config(['$stateProvider', '$urlRouterProvider', '$httpProvider',
+    function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
+      // Convert xml responses to json
+      $httpProvider.interceptors.push('xmlHttpInterceptor');
 
       $urlRouterProvider.otherwise("/");
 

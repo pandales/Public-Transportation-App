@@ -1,0 +1,16 @@
+<md-card class="platform-card" ng-show="platformInfo">
+    <md-card-header>
+        <md-card-header-text>
+            <span class="md-title">Platform {{platformNumber}}</span>
+        </md-card-header-text>
+    </md-card-header>
+
+    <md-list>
+        <md-list-item ng-repeat="(abbr, data) in platformInfo">
+            <p class="train" flex="25"> {{abbr}}: </p>
+            <p flex="">
+                <span ng-repeat="info in data">{{info.minutes}} min, </span>
+            </p>
+        </md-list-item>
+    </md-list>
+</md-card>
