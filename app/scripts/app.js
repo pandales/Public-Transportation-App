@@ -20,8 +20,32 @@ angular
 
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js')
-          .then(function () {
-            console.log('service worker registered');
+          .then(function (reg) {
+
+            if (!navigator.serviceWorker.controller) {
+              return;
+            }
+
+            if (reg.waiting) {
+              console.log("there is a sw waiting");
+            }
+
+            if (reg.installing) {
+              console.log("there is a sw installing (an update)");
+              reg.installing.addEventListener('statechange', function () {
+                if (this.state == 'installed') {
+
+                }
+              });
+            }
+
+            reg.addEventListener('updatefound', function () {
+              reg.installing.addEventListener('statechange', function () {
+                if (this.state == 'installed') {
+
+                }
+              });
+            });
           })
           .catch(function (m) {
             console.log(m)

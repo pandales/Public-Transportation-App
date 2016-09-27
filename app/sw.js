@@ -1,4 +1,4 @@
-var currentCacheName = 'public-transportation-v4';
+var currentCacheName = 'public-transportation-v1';
 
 self.addEventListener('install', function (event) {
   event.waitUntil(
