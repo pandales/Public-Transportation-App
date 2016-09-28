@@ -22,7 +22,6 @@ angular.module('publicTransportationApp')
     };
 
 
-
     $timeout(function () {
       document.getElementById("stationName").focus();
     });

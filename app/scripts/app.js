@@ -15,45 +15,25 @@ angular
     'ngMessages',
     'xml'
   ])
-  .config(['$stateProvider', '$urlRouterProvider', '$httpProvider',
-    function ($stateProvider, $urlRouterProvider, $httpProvider) {
+  .config([
+    '$stateProvider',
+    '$urlRouterProvider',
+    '$httpProvider',
+    '$mdToastProvider',
+    'serviceWorkerProvider',
+    function ($stateProvider, $urlRouterProvider, $httpProvider,
+              $mdToastProvider, serviceWorkerProvider) {
 
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-          .then(function (reg) {
-
-            if (!navigator.serviceWorker.controller) {
-              return;
-            }
-
-            if (reg.waiting) {
-              console.log("there is a sw waiting");
-            }
-
-            if (reg.installing) {
-              console.log("there is a sw installing (an update)");
-              reg.installing.addEventListener('statechange', function () {
-                if (this.state == 'installed') {
-
-                }
-              });
-            }
-
-            reg.addEventListener('updatefound', function () {
-              reg.installing.addEventListener('statechange', function () {
-                if (this.state == 'installed') {
-
-                }
-              });
-            });
-          })
-          .catch(function (m) {
-            console.log(m)
-          });
-
-      } else {
-        console.log("this browser does NOT support service worker");
-      }
+      $mdToastProvider.addPreset('SwUpdate', {
+        options: function() {
+          return {
+            hideDelay   : 0,
+            position    : 'bottom right',
+            controller  : 'SwUpdateCtrl',
+            templateUrl : 'views/elements/toast-sw.update.html'
+          };
+        }
+      });
 
       // Convert xml responses to json
       $httpProvider.interceptors.push('xmlHttpInterceptor');
