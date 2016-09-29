@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="publicTransportationApp">
+  <body ng-app="publicTransportationApp" ng-controller="ShellCtrl as ctrl">
     <!--[if lte IE 8]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -81,6 +81,9 @@
         <script src="scripts/services/local-storage.js"></script>
         <script src="scripts/services/station.js"></script>
         <script src="scripts/directives/platform-card.js"></script>
+        <script src="scripts/controllers/sw-update.js"></script>
+        <script src="scripts/services/service-worker-handler.js"></script>
+        <script src="scripts/controllers/shell.js"></script>
         <!-- endbuild -->
     <script src="https://localhost:35729/livereload.js"></script>
 </body>

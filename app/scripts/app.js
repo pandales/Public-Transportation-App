@@ -15,8 +15,25 @@ angular
     'ngMessages',
     'xml'
   ])
-  .config(['$stateProvider', '$urlRouterProvider', '$httpProvider',
-    function ($stateProvider, $urlRouterProvider, $httpProvider) {
+  .config([
+    '$stateProvider',
+    '$urlRouterProvider',
+    '$httpProvider',
+    '$mdToastProvider',
+
+    function ($stateProvider, $urlRouterProvider, $httpProvider,
+              $mdToastProvider) {
+
+      $mdToastProvider.addPreset('SwUpdate', {
+        options: function() {
+          return {
+            hideDelay   : 0,
+            position    : 'bottom right',
+            controller  : 'SwUpdateCtrl',
+            templateUrl : 'views/elements/toast-sw.update.html'
+          };
+        }
+      });
 
       // Convert xml responses to json
       $httpProvider.interceptors.push('xmlHttpInterceptor');
