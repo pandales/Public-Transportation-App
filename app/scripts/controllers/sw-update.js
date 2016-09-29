@@ -8,13 +8,18 @@
  * Controller of the publicTransportationApp
  */
 angular.module('publicTransportationApp')
-  .controller('SwUpdateCtrl', ['$scope', '$mdToast', function ($scope, $mdToast) {
+  .controller('SwUpdateCtrl', [
+    '$scope',
+    '$mdToast',
+    'serviceWorkerHandler',
+
+    function ($scope, $mdToast, serviceWorkerHandler) {
     $scope.closeToast = function () {
       $mdToast
         .hide();
     };
 
     $scope.updateSw = function () {
-      console.log("test");
+      serviceWorkerHandler.update();
     };
   }]);

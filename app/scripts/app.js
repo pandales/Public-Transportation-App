@@ -20,9 +20,9 @@ angular
     '$urlRouterProvider',
     '$httpProvider',
     '$mdToastProvider',
-    'serviceWorkerProvider',
+
     function ($stateProvider, $urlRouterProvider, $httpProvider,
-              $mdToastProvider, serviceWorkerProvider) {
+              $mdToastProvider) {
 
       $mdToastProvider.addPreset('SwUpdate', {
         options: function() {

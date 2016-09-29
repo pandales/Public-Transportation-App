@@ -2,21 +2,18 @@
 
 /**
  * @ngdoc service
- * @name publicTransportationApp.serviceWorker
+ * @name publicTransportationApp.serviceWorkerHandler
  * @description
- * # serviceWorker
- * Provider in the publicTransportationApp.
+ * # serviceWorkerHandler
+ * Factory in the publicTransportationApp.
  */
 angular.module('publicTransportationApp')
-  .provider('serviceWorker', [
-    '$mdToastProvider',
-
-    function ($mdToastProvider) {
-
-
-
-      console.log($mdToastProvider);
-
+  .factory('serviceWorkerHandler', ['$mdToast', function ($mdToast) {
+    var showToast = function () {
+      $mdToast.show(
+        $mdToast.SwUpdate()
+      );
+    };
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js')
         .then(function (reg) {
@@ -26,16 +23,14 @@ angular.module('publicTransportationApp')
           }
 
           if (reg.waiting) {
-            $mdToastProvider.show(
-              $mdToastProvider.SwUpdate()
-            );
+            showToast();
           }
 
           if (reg.installing) {
             console.log("there is a sw installing (an update)");
             reg.installing.addEventListener('statechange', function () {
               if (this.state == 'installed') {
-
+                showToast();
               }
             });
           }
@@ -43,7 +38,7 @@ angular.module('publicTransportationApp')
           reg.addEventListener('updatefound', function () {
             reg.installing.addEventListener('statechange', function () {
               if (this.state == 'installed') {
-
+                showToast();
               }
             });
           });
@@ -56,23 +51,10 @@ angular.module('publicTransportationApp')
       console.log("this browser does NOT support service worker");
     }
 
-    // Private variables
-    var salutation = 'Hello';
-
-    // Private constructor
-    function Greeter() {
-      this.greet = function () {
-        return salutation;
-      };
-    }
-
-    // Public API for configuration
-    this.setSalutation = function (s) {
-      salutation = s;
-    };
-
-    // Method for instantiating
-    this.$get = function () {
-      return new Greeter();
+    // Public API here
+    return {
+      update: function () {
+        console.log("update sw");
+      }
     };
   }]);
