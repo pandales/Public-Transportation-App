@@ -25,6 +25,7 @@ self.addEventListener('install', function (event) {
         'bower_components/angular-ui-router/release/angular-ui-router.js',
         'bower_components/x2js/xml2json.min.js',
         'bower_components/lodash/lodash.js',
+        'libraries/idb.js',
 /*        'scripts/directives/platform-card.js',
         'scripts/directives/platform-card.js',
         'scripts/controllers/view-route.js',
