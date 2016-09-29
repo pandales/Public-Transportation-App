@@ -9,28 +9,36 @@
  */
 angular.module('publicTransportationApp')
   .factory('serviceWorkerHandler', ['$mdToast', function ($mdToast) {
-    var showToast = function () {
+
+    var register = null;
+    var waitingWorker = null;
+
+    var showToast = function (worker) {
       $mdToast.show(
         $mdToast.SwUpdate()
       );
+      waitingWorker = worker;
     };
+
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js')
         .then(function (reg) {
+          register = reg;
 
           if (!navigator.serviceWorker.controller) {
             return;
           }
 
           if (reg.waiting) {
-            showToast();
+            showToast(reg.waiting);
+            console.log("it was waiting", reg.waiting);
           }
 
           if (reg.installing) {
-            console.log("there is a sw installing (an update)");
             reg.installing.addEventListener('statechange', function () {
               if (this.state == 'installed') {
-                showToast();
+                console.log("installed by statechange", this);
+                showToast(this);
               }
             });
           }
@@ -38,7 +46,8 @@ angular.module('publicTransportationApp')
           reg.addEventListener('updatefound', function () {
             reg.installing.addEventListener('statechange', function () {
               if (this.state == 'installed') {
-                showToast();
+                console.log("installed by statechange", this);
+                showToast(this);
               }
             });
           });
@@ -47,6 +56,11 @@ angular.module('publicTransportationApp')
           console.log(m)
         });
 
+      // Restart the browser when the sw change
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        window.location.reload();
+      });
+
     } else {
       console.log("this browser does NOT support service worker");
     }
@@ -54,7 +68,9 @@ angular.module('publicTransportationApp')
     // Public API here
     return {
       update: function () {
-        console.log("update sw");
+        if (register) {
+          waitingWorker.postMessage({action: 'skipWaiting'});
+        }
       }
     };
   }]);

@@ -1,4 +1,4 @@
-var currentCacheName = 'public-transportation-v1';
+var currentCacheName = 'public-transportation-v3';
 
 self.addEventListener('install', function (event) {
   event.waitUntil(
@@ -63,4 +63,10 @@ self.addEventListener('fetch', function (event) {
       return fetch(event.request);
     })
   );
+});
+
+self.addEventListener('message', function (message) {
+  if (message.data.action == 'skipWaiting') {
+    self.skipWaiting();
+  }
 });
