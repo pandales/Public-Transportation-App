@@ -35,6 +35,7 @@ angular
         }
       });
 
+
       // Convert xml responses to json
       $httpProvider.interceptors.push('xmlHttpInterceptor');
 

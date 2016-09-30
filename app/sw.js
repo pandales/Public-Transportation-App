@@ -3,6 +3,7 @@ var currentCacheName = 'public-transportation-v3';
 self.addEventListener('install', function (event) {
   event.waitUntil(
 
+
     caches.open(currentCacheName).then(function (cache) {
       return cache.addAll([
         '/',
@@ -26,7 +27,7 @@ self.addEventListener('install', function (event) {
         'bower_components/x2js/xml2json.min.js',
         'bower_components/lodash/lodash.js',
         'libraries/idb.js',
-/*        'scripts/directives/platform-card.js',
+/*      'scripts/directives/platform-card.js',
         'scripts/directives/platform-card.js',
         'scripts/controllers/view-route.js',
         'scripts/controllers/schedule.js',
