@@ -2,6 +2,7 @@
     <span layout-padding>52 trains currently in service.</span>
     <span layout-padding class="date" flex="">Sep 12, 10:25 am </span>
 </div>-->
+
 <form class="station-selection" ng-init="ctrl.searchForm.station.name = ctrl.searchForm.latestSearchedStation.name">
     <md-input-container>
         <label for="stationName">Station Name</label>
@@ -23,10 +24,11 @@
             Search</md-button>
     </div>
 </form>
+
 <section class="no-searched-text"
          layout-padding=""
          ng-show="!ctrl.searchForm.latestSearchedStation.name && !ctrl.searchForm.searchAttempts">
-    <p> Write a station name to search in the form above.</p
+    <p> Write a station name to search in the form above.</p>
 </section>
 <section class="no-result"
          layout-padding=""
@@ -41,3 +43,4 @@
             platform-info="platformInfo"
             platform-number="platformNumber"></platform-card>
 </section>
+

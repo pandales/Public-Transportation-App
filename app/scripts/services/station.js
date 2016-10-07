@@ -8,19 +8,13 @@
  * Service in the publicTransportationApp.
  */
 angular.module('publicTransportationApp')
-  .service('Station', ['$http', '$localstorage', '$window',
-    function ($http, $localstorage, $window) {
+  .service('Station', ['$http', '$localstorage', 'idb',
+    function ($http, $localstorage, idbService) {
       // AngularJS will instantiate a singleton by calling "new" on this function
-
-      var idb = $window.idb;
-
-      var dbPromise = idb.open('public-transportation', 1, function (upgradeDb) {
-        var keyValStore = upgradeDb.createObjectStore('station', { keyPath: 'abbr' });
-        keyValStore.createIndex('by-name', 'name');
-      });
-
+      var dbPromise = idbService.getDBPromise();
       var latestSearchedStation = $localstorage.getObject('latestSearchedStation') || {'name': ''};
       var stations = $localstorage.getObject('stations') || null;
+
       if (!stations) {
         $http({
           method: 'GET',
@@ -37,7 +31,6 @@ angular.module('publicTransportationApp')
                 stationStore.put(station);
               });
 
-
               return tx.complete;
             });
             return stations;
@@ -46,13 +39,20 @@ angular.module('publicTransportationApp')
 
       return {
         search: function (q) {
+          return dbPromise.then(function (db) {
+            var tx = db.transaction('station');
+            var nameIndex = tx.objectStore('station').index('by-name');
 
-          return stations.filter(function (station) {
+            return nameIndex.getAll().then(function (stations) {
 
-            if (station.name.toLowerCase().indexOf(q.toLowerCase()) >= 0) {
+              return stations.filter(function (station) {
 
-              return station;
-            }
+                if (station.name.toLowerCase().indexOf(q.toLowerCase()) >= 0) {
+
+                  return station;
+                }
+              });
+            });
           });
         },
 
@@ -84,7 +84,13 @@ angular.module('publicTransportationApp')
               if (response.data.root.station) {
                 var stationData = self.transformStationData(response.data.root.station);
                 latestSearchedStation = stationData;
-                $localstorage.setObject('latestSearchedStation', stationData);
+                $localstorage.setObject('latestSearchedStation',latestSearchedStation);
+                // Add the RTInfo to the databse
+                dbPromise.then(function (db) {
+                  var rtinfoStore = db.transaction('RTInfo', 'readwrite').objectStore('RTInfo');
+                  rtinfoStore.put(response.data.root.station);
+                });
+                console.log(stationData);
                 resolve(stationData);
               } else {
                 reject(response.data.root.message);
@@ -94,12 +100,19 @@ angular.module('publicTransportationApp')
         },
 
         getLatestSearchedStation: function () {
+
           return latestSearchedStation;
         },
 
         transformStationData: function (stationInfo) {
           var platforms = [];
           stationInfo.etd.forEach(function (destination) {
+
+            // When only there is a destination/platform available the API return this property has an object.
+            if (!Array.isArray(destination.estimate)) {
+              destination.estimate = [destination.estimate];
+            }
+
             destination.estimate.forEach(function (estimate) {
               var platformNumber = estimate.platform;
               var destinationAbbr = destination.abbreviation;
