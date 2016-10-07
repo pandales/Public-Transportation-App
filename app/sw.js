@@ -3,18 +3,19 @@ var currentCacheName = 'public-transportation-v3';
 self.addEventListener('install', function (event) {
   event.waitUntil(
 
+
     caches.open(currentCacheName).then(function (cache) {
       return cache.addAll([
-        '/',
+        '/'/*,
         'bower_components/angular-material/angular-material.css',
         'styles/main.css',
         'views/schedule.html',
         'views/schedule.html',
         'views/directives/platform-card.html ',
-        'views/view-route.html',
+        'views/view-route.html',*/
 
         // TODO: Replace this to the minify js for dist
-        /*'scripts/app.js',*/
+        /*'scripts/app.js',
         'bower_components/angular/angular.js',
         'bower_components/angular-ui-router/release/angular-ui-router.js',
         'bower_components/angular-xml/angular-xml.js',
@@ -25,7 +26,8 @@ self.addEventListener('install', function (event) {
         'bower_components/angular-ui-router/release/angular-ui-router.js',
         'bower_components/x2js/xml2json.min.js',
         'bower_components/lodash/lodash.js',
-/*        'scripts/directives/platform-card.js',
+        'libraries/idb.js',
+        'scripts/directives/platform-card.js',
         'scripts/directives/platform-card.js',
         'scripts/controllers/view-route.js',
         'scripts/controllers/schedule.js',
