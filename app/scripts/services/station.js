@@ -10,7 +10,6 @@
 angular.module('publicTransportationApp')
   .service('Station', ['$http', '$localstorage', 'idb',
     function ($http, $localstorage, idbService) {
-      // AngularJS will instantiate a singleton by calling "new" on this function
       var dbPromise = idbService.getDBPromise();
       var latestSearchedStation = $localstorage.getObject('latestSearchedStation') || {'name': ''};
       var stations = $localstorage.getObject('stations') || null;
@@ -84,7 +83,7 @@ angular.module('publicTransportationApp')
               if (response.data.root.station) {
                 var stationData = self.transformStationData(response.data.root.station);
                 latestSearchedStation = stationData;
-                $localstorage.setObject('latestSearchedStation',latestSearchedStation);
+                $localstorage.setObject('latestSearchedStation', latestSearchedStation);
                 // Add the RTInfo to the databse
                 dbPromise.then(function (db) {
                   var rtinfoStore = db.transaction('RTInfo', 'readwrite').objectStore('RTInfo');
@@ -99,9 +98,43 @@ angular.module('publicTransportationApp')
           });
         },
 
+        getPossibleArrivals: function (departureStationName) {
+          //
+          return dbPromise.then(function (db) {
+            var tx = db.transaction('station');
+
+            return tx.objectStore('station').index('by-name').getKey(departureStationName)
+              .then(function (departureAbbr) {
+
+                return $http({
+                  method: 'GET',
+                  url: 'https://api.bart.gov/api/sched.aspx?cmd=stnsched&key=MW9S-E7SL-26DU-VV8V&l=1&orig=' + departureAbbr
+                })
+              })
+              .then(function (response) {
+
+                console.log(response.data.root.station);
+              });
+          });
+
+
+        },
+
         getLatestSearchedStation: function () {
 
           return latestSearchedStation;
+        },
+
+        getLatestSearchedDepartureStation: function () {
+          return {
+            'name': ''
+          }
+        },
+
+        getLatestSearchedArrivalStation: function () {
+          return {
+            'name': ''
+          }
         },
 
         transformStationData: function (stationInfo) {

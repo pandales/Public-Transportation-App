@@ -1,1 +1,34 @@
-<p>This is the view-route view.</p>
+<form class="route-selection" layout-padding="">
+
+    <md-input-container flex="100" flex-gt-sm="33">
+        <label for="departureStation">Departure station</label>
+        <input id="departureStation"
+               ng-model="ctrl.searchForm.departureStation.name"
+               list="departureStationOptions"
+               ng-keyup="ctrl.searchDepartureStation()"
+               autofocus>
+        <datalist id="departureStationOptions">
+            <option ng-repeat="station in ctrl.departureSationOptions"
+                    value="{{station.name}}"></option>
+        </datalist>
+    </md-input-container>
+
+    <md-input-container flex="100" flex-gt-sm="33">
+        <label for="arrivalStation">Arrival station</label>
+        <input id="arrivalStation"
+               ng-model="ctrl.searchForm.arrivalStation.name"
+               list="arrivalStationOptions"
+               ng-keyup="ctrl.searchArrivalStation()"
+               disabled="true">
+        <datalist id="arrivalStationOptions">
+            <option ng-repeat="station in ctrl.arrivalStationOptions"
+                    value="{{station.name}}"></option>
+        </datalist>
+    </md-input-container>
+
+    <md-button
+            class="md-primary"
+            ng-click="ctrl.getPossibleArrivals()">
+        Search
+    </md-button>
+</form>

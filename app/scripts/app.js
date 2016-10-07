@@ -39,7 +39,7 @@ angular
       // Convert xml responses to json
       $httpProvider.interceptors.push('xmlHttpInterceptor');
 
-      $urlRouterProvider.otherwise("/");
+      $urlRouterProvider.otherwise("/view-route");
 
       $stateProvider
         .state('schedule', {
