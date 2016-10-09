@@ -22,8 +22,10 @@ angular.module('publicTransportationApp')
 
           return dbPromise.then(function (db) {
             var tx = db.transaction('station');
-            stationsAbbrPromises.push(tx.objectStore('station').index('by-name').getKey(departureName));
-            stationsAbbrPromises.push(tx.objectStore('station').index('by-name').getKey(arrivalName));
+            stationsAbbrPromises
+              .push(tx.objectStore('station').index('by-name').getKey(departureName));
+            stationsAbbrPromises
+              .push(tx.objectStore('station').index('by-name').getKey(arrivalName));
 
             return Promise.all(stationsAbbrPromises).then(function (stationsAbbr) {
               console.log(values);

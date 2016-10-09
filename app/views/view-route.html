@@ -5,7 +5,7 @@
         <input id="departureStation"
                ng-model="ctrl.searchForm.departureStation.name"
                list="departureStationOptions"
-               ng-keyup="ctrl.searchDepartureStation()"
+               ng-change="ctrl.searchDepartureStation()"
                autofocus>
         <datalist id="departureStationOptions">
             <option ng-repeat="station in ctrl.departureSationOptions"
@@ -18,7 +18,8 @@
         <input id="arrivalStation"
                ng-model="ctrl.searchForm.arrivalStation.name"
                list="arrivalStationOptions"
-               ng-keyup="ctrl.searchArrivalStation()"
+               ng-focus="ctrl.getPossibleDestination()"
+               ng-change="ctrl.checkPossibleDestination()"
                disabled="true">
         <datalist id="arrivalStationOptions">
             <option ng-repeat="station in ctrl.arrivalStationOptions"
@@ -27,7 +28,9 @@
     </md-input-container>
 
     <md-button
+            id="searchRoute"
             class="md-primary"
+            ng-disabled="!ctrl.searchForm.enableSearch"
             ng-click="ctrl.getPossibleArrivals()">
         Search
     </md-button>

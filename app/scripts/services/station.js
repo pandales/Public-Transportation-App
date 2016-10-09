@@ -89,7 +89,6 @@ angular.module('publicTransportationApp')
                   var rtinfoStore = db.transaction('RTInfo', 'readwrite').objectStore('RTInfo');
                   rtinfoStore.put(response.data.root.station);
                 });
-                console.log(stationData);
                 resolve(stationData);
               } else {
                 reject(response.data.root.message);
@@ -98,26 +97,33 @@ angular.module('publicTransportationApp')
           });
         },
 
-        getPossibleArrivals: function (departureStationName) {
-          //
-          return dbPromise.then(function (db) {
-            var tx = db.transaction('station');
-
-            return tx.objectStore('station').index('by-name').getKey(departureStationName)
-              .then(function (departureAbbr) {
-
-                return $http({
-                  method: 'GET',
-                  url: 'https://api.bart.gov/api/sched.aspx?cmd=stnsched&key=MW9S-E7SL-26DU-VV8V&l=1&orig=' + departureAbbr
-                })
-              })
-              .then(function (response) {
-
-                console.log(response.data.root.station);
+        getPossibleDestination: function (departureAbbr, q) {
+          return $http({
+            method: 'GET',
+            url: 'https://api.bart.gov/api/sched.aspx?cmd=stnsched&key=MW9S-E7SL-26DU-VV8V&orig=' + departureAbbr
+          })
+            .then(function (response) {
+              var possibleDestinations = [];
+              response.data.root.station.item.forEach(function (station) {
+                if (possibleDestinations.indexOf(station._trainHeadStation) < 0) {
+                  possibleDestinations.push(station._trainHeadStation);
+                }
               });
-          });
 
+              return possibleDestinations;
+            })
+            .then(function (possibleDestinations) {
+              return dbPromise.then(function (db) {
+                var stationStore = db.transaction('station').objectStore('station');
 
+                return Promise.all(
+                  possibleDestinations.map(
+                    function (destinationAbbr) {
+                      return stationStore.get(destinationAbbr);
+                    })
+                );
+              });
+            });
         },
 
         getLatestSearchedStation: function () {
@@ -127,13 +133,15 @@ angular.module('publicTransportationApp')
 
         getLatestSearchedDepartureStation: function () {
           return {
-            'name': ''
+            name: '',
+            abbr: ''
           }
         },
 
         getLatestSearchedArrivalStation: function () {
           return {
-            'name': ''
+            name: '',
+            abbr: ''
           }
         },
 
